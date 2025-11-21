@@ -1,0 +1,29 @@
+{
+  "defaultEnv": "development",
+  "development": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "amrutam_db",
+    "user": "amrutam",
+    "password": "amrutam123",
+    "driver": "pg"
+  },
+  "test": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "amrutam_db_test",
+    "user": "amrutam",
+    "password": "amrutam123",
+    "driver": "pg"
+  },
+  "production": {
+    "host": "${DB_HOST}",
+    "port": "${DB_PORT}",
+    "database": "${DB_NAME}",
+    "user": "${DB_USER}",
+    "password": "${DB_PASSWORD}",
+    "driver": "pg",
+    "ssl": true
+  }
+}
+

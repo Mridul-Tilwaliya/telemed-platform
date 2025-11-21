@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: amrutam-postgres
+spec:
+  serviceName: amrutam-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: amrutam-postgres
+  template:
+    metadata:
+      labels:
+        app: amrutam-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: amrutam-secrets
+              key: db-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: amrutam-secrets
+              key: db-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: amrutam-secrets
+              key: db-name
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: amrutam-postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: amrutam-postgres
+
